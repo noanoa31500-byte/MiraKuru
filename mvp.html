@@ -627,7 +627,7 @@
           <span class="mark" aria-hidden="true"></span>
           <span>MiraKuru</span>
         </div>
-        <div><span id="stepNow">1</span> / 7</div>
+        <div><span id="stepNow">1</span> / 8</div>
       </div>
 
       <section class="card screen" data-screen="0">
@@ -644,6 +644,30 @@
       </section>
 
       <section class="card screen hidden" data-screen="1">
+        <p class="eyebrow">ABOUT THIS MVP</p>
+        <h2>これは、日記でも診断でもありません。</h2>
+        <p class="lead">
+          MiraKuruは、スマホ・ゲーム・動画・SNS・将来不安など、
+          若者の日常の出来事を責めずに整理し、興味のヒントや
+          次にできそうなことにつなげるAIアプリのMVPです。
+        </p>
+        <div class="summary">
+          <div class="summary-item">
+            <strong>今回試したいこと</strong>
+            <span>短い入力でも始められるか。責められない感じがあるか。普通のAIチャットや日記アプリと違う価値を感じるか。</span>
+          </div>
+          <div class="summary-item">
+            <strong>製品版で目指すこと</strong>
+            <span>記録が増えるほど、何度も出てくる興味・不安・反応の形を見つけ、自分でも気づきにくい強みの組み合わせを見えるようにします。</span>
+          </div>
+          <div class="summary-item">
+            <strong>今日の体験でやること</strong>
+            <span>近い入口を選び、短く書き、気になった点を選ぶだけです。最後に、受け取りやすかったかを教えてください。</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card screen hidden" data-screen="2">
         <p class="eyebrow">ENTRY</p>
         <h2>まず、近いものを選んでください。</h2>
         <p class="lead">あとで自由に書けます。今は近いテーマを1つ選ぶだけで進めます。</p>
@@ -655,7 +679,7 @@
         </div>
       </section>
 
-      <section class="card screen hidden" data-screen="2">
+      <section class="card screen hidden" data-screen="3">
         <p class="eyebrow">INPUT</p>
         <h2 id="inputTitle">ざっくりで大丈夫です。</h2>
         <p class="lead" id="inputLead">今日あったことを、短く書いてください。</p>
@@ -665,7 +689,7 @@
         </div>
       </section>
 
-      <section class="card screen hidden" data-screen="3">
+      <section class="card screen hidden" data-screen="4">
         <p class="eyebrow">MIRAKURU</p>
         <h2 id="questionTitle">反応した点を選んでください。</h2>
         <div class="stack">
@@ -677,7 +701,7 @@
         </div>
       </section>
 
-      <section class="card screen hidden" data-screen="4">
+      <section class="card screen hidden" data-screen="5">
         <p class="eyebrow">TODAY</p>
         <h2>今日のまとめ</h2>
         <p class="lead">今の内容を、短く整理します。</p>
@@ -714,7 +738,7 @@
         </div>
       </section>
 
-      <section class="card screen hidden" data-screen="5">
+      <section class="card screen hidden" data-screen="6">
         <p class="eyebrow">MIRAKURU GRAPH</p>
         <h2>よく出るテーマが見えてきます。</h2>
         <p class="lead">
@@ -725,7 +749,7 @@
         <p class="note" id="graphNote"></p>
       </section>
 
-      <section class="card screen hidden" data-screen="6">
+      <section class="card screen hidden" data-screen="7">
         <p class="eyebrow">FEEDBACK</p>
         <h2>使ってみて、どうでしたか？</h2>
         <p class="lead">
@@ -1065,11 +1089,11 @@
       backButton.disabled = currentScreen === 0;
       backButton.style.opacity = currentScreen === 0 ? "0.45" : "1";
       nav.classList.toggle("hidden-nav", currentScreen === 0);
-      nav.classList.toggle("back-only", [1, 2, 3].includes(currentScreen));
+      nav.classList.toggle("back-only", [2, 3, 4].includes(currentScreen));
       const nextLabels = {
-        4: "記録の傾向を見る",
-        5: "感想へ",
-        6: "最初に戻る"
+        5: "記録の傾向を見る",
+        6: "感想へ",
+        7: "最初に戻る"
       };
       nextButton.textContent = nextLabels[currentScreen] || "次へ";
     }
@@ -1726,7 +1750,7 @@
     document.querySelectorAll("[data-entry]").forEach((button) => {
       button.addEventListener("click", () => {
         setEntry(button.dataset.entry);
-        showScreen(2);
+        showScreen(3);
       });
     });
 
@@ -1746,7 +1770,7 @@
     });
 
     document.getElementById("toQuestionButton").addEventListener("click", () => {
-      showScreen(3);
+      showScreen(4);
     });
 
     document.getElementById("toSummaryButton").addEventListener("click", () => {
@@ -1754,7 +1778,7 @@
       renderSummary(currentSession);
       saveCurrentSession(currentSession);
       renderGraph(currentSession);
-      showScreen(4);
+      showScreen(5);
     });
 
     document.getElementById("feedbackButton").addEventListener("click", openFeedbackForm);
@@ -1770,11 +1794,11 @@
         showScreen(0);
         return;
       }
-      if (currentScreen === 1) {
-        showScreen(2);
+      if (currentScreen === 2) {
+        showScreen(3);
         return;
       }
-      if (currentScreen === 3) {
+      if (currentScreen === 4) {
         currentSession = buildSession();
         renderSummary(currentSession);
         saveCurrentSession(currentSession);
