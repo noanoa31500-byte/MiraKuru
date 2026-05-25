@@ -1,0 +1,1790 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MiraKuru - 価値検証MVP</title>
+  <style>
+    :root {
+      --bg: #f8f9ff;
+      --surface: #ffffff;
+      --surface-soft: #f4f9fb;
+      --surface-mint: #eefaf5;
+      --text: #0b1c30;
+      --muted: #52605c;
+      --primary: #2b6955;
+      --primary-ink: #0c513e;
+      --primary-soft: #bfffe5;
+      --green: #c7ebd5;
+      --blue: #cae6ff;
+      --blue-soft: #eff6ff;
+      --border: #dfeae5;
+      --border-strong: #c8ddd5;
+      --shadow: 0 14px 36px rgba(43, 105, 85, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Hanken Grotesk", system-ui, -apple-system, BlinkMacSystemFont,
+        "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f8f9ff 0%, #f9fbfa 48%, #f6faf8 100%);
+    }
+
+    main {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .app {
+      width: min(100%, 460px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      background: rgba(248, 249, 255, 0.72);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(43, 105, 85, 0.10);
+      background: rgba(248, 249, 255, 0.86);
+      backdrop-filter: blur(18px);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
+      font-weight: 800;
+      letter-spacing: 0;
+      font-size: 22px;
+    }
+
+    .mark {
+      width: 24px;
+      height: 24px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, rgba(191, 255, 229, 0.95), rgba(202, 230, 255, 0.95));
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(43, 105, 85, 0.10);
+    }
+
+    .mark::after {
+      content: "";
+      position: absolute;
+      left: 9px;
+      right: 9px;
+      bottom: 6px;
+      height: 12px;
+      border-radius: 12px 12px 2px 2px;
+      background: var(--green);
+    }
+
+    .card {
+      width: 100%;
+      padding: 40px 24px 116px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 8vw, 42px);
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 7vw, 36px);
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .lead {
+      margin-top: 16px;
+      max-width: 38ch;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .button,
+    .choice,
+    .chip {
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .button,
+    .choice {
+      width: 100%;
+      min-height: 56px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      font-weight: 800;
+      color: var(--primary-ink);
+      background: var(--primary-soft);
+      transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+    }
+
+    .button:hover,
+    .choice:hover {
+      transform: translateY(-1px);
+      filter: saturate(1.02);
+      box-shadow: 0 12px 28px rgba(43, 105, 85, 0.12);
+    }
+
+    .button.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--primary);
+      box-shadow: none;
+    }
+
+    .choice {
+      position: relative;
+      min-height: 96px;
+      padding: 22px 64px 22px 22px;
+      border: 1px solid rgba(43, 105, 85, 0.12);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--text);
+      box-shadow: 0 8px 26px rgba(43, 105, 85, 0.05);
+      text-align: left;
+      font-size: 20px;
+      line-height: 1.45;
+    }
+
+    .choice::after {
+      content: ">";
+      position: absolute;
+      right: 22px;
+      top: 50%;
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue-soft);
+      color: var(--primary);
+      font-size: 24px;
+      font-weight: 700;
+      transform: translateY(-50%);
+    }
+
+    .choice:nth-child(2) {
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .choice:nth-child(3) {
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .choice:nth-child(4) {
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .text-box {
+      width: 100%;
+      min-height: 148px;
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.78);
+      color: #263936;
+      font-size: 17px;
+      line-height: 1.75;
+      resize: none;
+    }
+
+    .text-box:focus {
+      outline: 3px solid rgba(47, 109, 93, 0.14);
+      border-color: var(--primary);
+    }
+
+    .bubble {
+      border-radius: 22px;
+      border: 1px solid #d8e8e2;
+      background: rgba(255, 255, 255, 0.62);
+      padding: 20px;
+      color: #2d3b37;
+      line-height: 1.8;
+    }
+
+    .chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      padding: 22px;
+      border: 1px solid rgba(43, 105, 85, 0.10);
+      border-radius: 24px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(239, 246, 255, 0.58));
+    }
+
+    .chip-help {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .chip {
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.72);
+      color: #37514a;
+      font-weight: 700;
+      box-shadow: 0 3px 10px rgba(43, 105, 85, 0.03);
+    }
+
+    .chip.active {
+      border-color: rgba(43, 105, 85, 0.18);
+      background: var(--primary-soft);
+      color: #123a31;
+    }
+
+    .summary {
+      display: grid;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .summary-item {
+      position: relative;
+      overflow: hidden;
+      padding: 22px 22px 22px 26px;
+      border: 1px solid rgba(191, 255, 229, 0.56);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.76);
+      box-shadow: 0 10px 28px rgba(43, 105, 85, 0.04);
+    }
+
+    .summary-item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, var(--primary-soft), var(--blue));
+    }
+
+    .summary-item.gem {
+      background: linear-gradient(145deg, rgba(239, 255, 247, 0.96), rgba(246, 251, 255, 0.96));
+      border-color: rgba(43, 105, 85, 0.18);
+    }
+
+    .summary-item.gem strong {
+      color: var(--primary);
+      font-size: 16px;
+    }
+
+    .summary-item strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #263936;
+      font-size: 14px;
+    }
+
+    .summary-item span {
+      display: block;
+      font-size: 15px;
+      line-height: 1.85;
+      color: #34423e;
+    }
+
+    .origin-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .origin-tags span {
+      width: auto;
+      padding: 6px 12px;
+      border: 1px solid rgba(43, 105, 85, 0.14);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.68);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .graph {
+      display: grid;
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .graph-panel {
+      position: relative;
+      overflow: hidden;
+      min-height: 390px;
+      padding: 24px;
+      border: 1px solid rgba(191, 255, 229, 0.65);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.58);
+      box-shadow: var(--shadow);
+    }
+
+    .graph-section-title {
+      display: block;
+      margin-bottom: 10px;
+      color: #31526a;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .graph-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .graph-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid rgba(112, 121, 116, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+      color: #253b36;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 3px 10px rgba(43, 105, 85, 0.04);
+    }
+
+    .graph-chip::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+
+    .graph-core {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 150px;
+      margin: 18px 0;
+    }
+
+    .graph-core::before,
+    .graph-core::after {
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 132px;
+      border-radius: 4px;
+      background: linear-gradient(180deg, rgba(191, 255, 229, 0.85), rgba(202, 230, 255, 0.85));
+      opacity: 0.7;
+    }
+
+    .graph-core::before {
+      transform: rotate(28deg);
+    }
+
+    .graph-core::after {
+      transform: rotate(-38deg);
+      opacity: 0.45;
+    }
+
+    .graph-gem {
+      position: relative;
+      z-index: 1;
+      width: 88px;
+      height: 88px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-soft), var(--blue));
+      color: var(--primary);
+      font-size: 38px;
+      font-weight: 800;
+      box-shadow: 0 0 40px rgba(191, 255, 229, 0.58);
+    }
+
+    .graph-result {
+      margin-top: 16px;
+      padding: 16px;
+      border-left: 4px solid var(--blue);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.76);
+    }
+
+    .graph-result small {
+      display: block;
+      margin-bottom: 6px;
+      color: #31526a;
+      font-weight: 800;
+    }
+
+    .graph-result strong {
+      color: var(--primary);
+      font-size: 20px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+    }
+
+    .dot.green {
+      background: var(--green);
+    }
+
+    .dot.blue {
+      background: var(--blue);
+    }
+
+    .plans {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .plan {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      background: #fbfdfc;
+    }
+
+    .feedback-list {
+      display: grid;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .feedback-card {
+      padding: 18px;
+      border: 1px solid rgba(191, 255, 229, 0.54);
+      border-left: 4px solid var(--blue);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .feedback-card strong {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .feedback-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .feedback-options button {
+      min-height: 40px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(69, 101, 84, 0.12);
+      color: var(--primary);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .feedback-options button.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .plan strong {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .plan small {
+      display: block;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .note {
+      margin-top: 18px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #788580;
+    }
+
+    .nav {
+      position: sticky;
+      bottom: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: auto;
+      padding: 16px 24px;
+      border-top: 1px solid rgba(43, 105, 85, 0.08);
+      border-radius: 24px 24px 0 0;
+      background: rgba(248, 249, 255, 0.92);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav.hidden-nav {
+      display: none;
+    }
+
+    .nav.back-only {
+      grid-template-columns: 1fr;
+    }
+
+    .nav.back-only #nextButton {
+      display: none;
+    }
+
+    @media (max-width: 380px) {
+      main {
+        padding: 0;
+      }
+
+      .card {
+        padding: 32px 18px 108px;
+      }
+
+      .nav {
+        padding: 14px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="app">
+      <div class="topbar" aria-live="polite">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"></span>
+          <span>MiraKuru</span>
+        </div>
+        <div><span id="stepNow">1</span> / 7</div>
+      </div>
+
+      <section class="card screen" data-screen="0">
+        <p class="eyebrow">EXPERIENCE MVP</p>
+        <h1>スマホやゲームの時間から、次に試せることを見つける。</h1>
+        <p class="lead">
+          今日のことを少し書くと、MiraKuruが興味のヒントと、
+          次にできそうなことを整理します。
+        </p>
+        <div class="stack">
+          <button class="button" type="button" data-next>はじめる</button>
+        </div>
+        <p class="note">入力内容はこの端末内に保存されます。共有端末では見られる可能性があります。記録は最後の画面から削除できます。</p>
+      </section>
+
+      <section class="card screen hidden" data-screen="1">
+        <p class="eyebrow">ENTRY</p>
+        <h2>まず、近いものを選んでください。</h2>
+        <p class="lead">あとで自由に書けます。今は近いテーマを1つ選ぶだけで進めます。</p>
+        <div class="stack">
+          <button class="choice" type="button" data-entry="game">ゲーム・動画のこと</button>
+          <button class="choice" type="button" data-entry="phone">スマホ時間が少し気になる</button>
+          <button class="choice" type="button" data-entry="future">最近、将来が不安</button>
+          <button class="choice" type="button" data-entry="free">まだ言葉になっていない</button>
+        </div>
+      </section>
+
+      <section class="card screen hidden" data-screen="2">
+        <p class="eyebrow">INPUT</p>
+        <h2 id="inputTitle">ざっくりで大丈夫です。</h2>
+        <p class="lead" id="inputLead">今日あったことを、短く書いてください。</p>
+        <div class="stack">
+          <textarea class="text-box" id="entryInput" aria-label="今日の内容"></textarea>
+          <button class="button" type="button" id="toQuestionButton">次の質問へ</button>
+        </div>
+      </section>
+
+      <section class="card screen hidden" data-screen="3">
+        <p class="eyebrow">MIRAKURU</p>
+        <h2 id="questionTitle">反応した点を選んでください。</h2>
+        <div class="stack">
+          <div class="bubble" id="questionText"></div>
+          <div class="chip-grid" id="questionChips"></div>
+          <p class="chip-help" id="chipHelp"></p>
+          <textarea class="text-box" id="answerInput" aria-label="補足" placeholder="補足があれば入力してください。未入力でも進めます。"></textarea>
+          <button class="button" type="button" id="toSummaryButton">まとめを見る</button>
+        </div>
+      </section>
+
+      <section class="card screen hidden" data-screen="4">
+        <p class="eyebrow">TODAY</p>
+        <h2>今日のまとめ</h2>
+        <p class="lead">今の内容を、短く整理します。</p>
+        <div class="summary">
+          <div class="summary-item">
+            <strong>今日のこと</strong>
+            <span id="sumToday"></span>
+          </div>
+          <div class="summary-item">
+            <strong id="sumReactionTitle">心が動いたところ</strong>
+            <span id="sumReaction"></span>
+          </div>
+          <div class="summary-item hidden" id="sumSafetyWrap">
+            <strong>今すぐ安全を優先してください</strong>
+            <span>
+              ひとりで抱えず、近くの大人、学校、地域の相談窓口につないでください。
+              緊急の危険があるときは119または110へ。
+              相談先: 厚生労働省「まもろうよこころ」、18歳までならチャイルドライン、よりそいホットライン。
+            </span>
+          </div>
+          <div class="summary-item hidden" id="sumGuardWrap">
+            <strong>その時間に助かっていたこと</strong>
+            <span id="sumGuarded"></span>
+          </div>
+          <div class="summary-item gem">
+            <strong id="sumOriginTitle">見えてきた興味・強みのヒント</strong>
+            <span id="sumOrigin"></span>
+            <div class="origin-tags" id="originTags"></div>
+          </div>
+          <div class="summary-item">
+            <strong id="sumStepTitle">次にできそうなこと</strong>
+            <span id="sumStep"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card screen hidden" data-screen="5">
+        <p class="eyebrow">MIRAKURU GRAPH</p>
+        <h2>よく出るテーマが見えてきます。</h2>
+        <p class="lead">
+          MiraKuru Graphでは、別の日にも出てくる興味・不安・反応の形を
+          まとめて見られます。
+        </p>
+        <div class="graph" id="graphList"></div>
+        <p class="note" id="graphNote"></p>
+      </section>
+
+      <section class="card screen hidden" data-screen="6">
+        <p class="eyebrow">FEEDBACK</p>
+        <h2>使ってみて、どうでしたか？</h2>
+        <p class="lead">
+          入力しやすさや、表示された内容の受け取りやすさを確認しています。
+        </p>
+        <div class="feedback-list">
+          <div class="feedback-card">
+            <strong>責められない感じはありましたか？</strong>
+            <div class="feedback-options">
+              <button type="button">はい</button>
+              <button type="button">少し</button>
+              <button type="button">いいえ</button>
+            </div>
+          </div>
+          <div class="feedback-card">
+            <strong>不安や罪悪感に変化はありましたか？</strong>
+            <div class="feedback-options">
+              <button type="button">はい</button>
+              <button type="button">少し</button>
+              <button type="button">いいえ</button>
+            </div>
+          </div>
+          <div class="feedback-card">
+            <strong>自分の反応が少し見えましたか？</strong>
+            <div class="feedback-options">
+              <button type="button">はい</button>
+              <button type="button">少し</button>
+              <button type="button">いいえ</button>
+            </div>
+          </div>
+          <div class="feedback-card">
+            <strong>提示されたことは重すぎませんでしたか？</strong>
+            <div class="feedback-options">
+              <button type="button">はい</button>
+              <button type="button">少し</button>
+              <button type="button">いいえ</button>
+            </div>
+          </div>
+          <div class="feedback-card">
+            <strong>また使ってみたいですか？</strong>
+            <div class="feedback-options">
+              <button type="button">はい</button>
+              <button type="button">少し</button>
+              <button type="button">いいえ</button>
+            </div>
+          </div>
+          <div class="feedback-card">
+            <strong>普通のAIチャットや日記アプリと違う感じはありましたか？</strong>
+            <div class="feedback-options">
+              <button type="button">はい</button>
+              <button type="button">少し</button>
+              <button type="button">いいえ</button>
+            </div>
+          </div>
+        </div>
+        <div class="stack">
+          <button class="button" type="button" id="feedbackButton">感想を送る</button>
+          <button class="button secondary" type="button" id="resetLogButton">保存した記録を消す</button>
+        </div>
+        <p class="note">今はフォーム準備中です。</p>
+      </section>
+
+      <div class="nav">
+        <button class="button secondary" type="button" id="backButton">戻る</button>
+        <button class="button" type="button" id="nextButton">次へ</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const feedbackFormUrl = "";
+    const storageKey = "mirakuru_mvp_sessions_v1";
+
+    const responseLogic = {
+      riskRules: {
+        highRiskInputPatterns: [
+          "死にたい",
+          "消えたい",
+          "自傷",
+          "自殺",
+          "殺したい",
+          "もう無理",
+          "もう限界",
+          "生きていたくない",
+          "生きたくない",
+          "死ぬ",
+          "死にそう"
+        ],
+        responsePolicy: {
+          reaction: "今は整理や自己分析より、安全を優先する状態です。",
+          protectedFrom: "",
+          rawTalentStone: "今は強みに変換しなくていい。ひとりで抱えず、人につなげることを最優先にします。",
+          smallStep: "今すぐ近くの大人、学校、相談窓口につなぐ。緊急の危険があるときは119または110へ。"
+        }
+      },
+      entries: {
+        game: {
+          question: "気になったところを選んでください。複数選べます。",
+          tags: ["話し方", "見せ方", "編集", "音楽", "キャラ", "ストーリー", "世界観", "攻略", "上達感", "達成感", "操作感", "協力", "役割分担", "一緒にいる感じ", "緊張感", "癒やし", "なんとなく続けた"],
+          rules: [
+            {
+              id: "game_presentation",
+              matchAny: ["話し方", "見せ方", "編集"],
+              need: "わかりやすさに触れたい",
+              expression: "気づく",
+              reaction: "{material}の中でも、内容そのものだけでなく、伝え方や見せ方に目が向いていた。",
+              rawTalentStone: "人が見続けたくなる話し方や見せ方に気づけるかもしれない。説明、編集、発信の力につながる。",
+              smallStep: "見続けたくなった場面を1つ選んで、何がよかったかを短くメモする。"
+            },
+            {
+              id: "game_world",
+              matchAny: ["音楽", "キャラ", "ストーリー", "世界観"],
+              need: "世界に入りたい",
+              expression: "つくる",
+              reaction: "遊び方だけでなく、その世界の空気や物語に反応していた。",
+              rawTalentStone: "世界に入り込みながら、その空気や仕組みを受け取れているかもしれない。企画や創作の入口になる。",
+              smallStep: "その世界やキャラのどこが残ったかを、1行だけ残す。"
+            },
+            {
+              id: "game_mastery",
+              matchAny: ["攻略", "上達感", "達成感", "操作感"],
+              need: "できるようになりたい",
+              expression: "深める",
+              reaction: "少しずつ進む感じや、できるようになる流れに反応していた。",
+              rawTalentStone: "少しずつ分かる、できるようになる流れをつかめているかもしれない。学習設計や攻略する力につながる。",
+              smallStep: "少し気持ちよかった場面を1つ選んで、何が進んだ感じだったかを短くメモする。"
+            },
+            {
+              id: "game_social_presence",
+              matchAny: ["協力", "役割分担", "一緒にいる感じ"],
+              need: "つながっていたい",
+              expression: "つなぐ",
+              reaction: "ひとりで見ていても、場に混ざっているような感覚に反応していた。",
+              rawTalentStone: "人がひとりじゃないと感じられる空気や距離感に反応しているかもしれない。場づくりやコミュニティ設計につながる。",
+              smallStep: "一緒に動きやすかった場面があれば、何がよかったかを1つだけ残す。"
+            }
+          ]
+        },
+        phone: {
+          question: "まずは、何を見ていたかだけ選んでください。理由は分からなくても大丈夫です。",
+          activityTags: ["YouTube", "TikTok", "X", "Instagram", "LINE", "Discord", "漫画", "推し", "コメント欄", "ライブ配信", "ニュース", "検索", "掲示板", "短い動画"],
+          guardTags: ["退屈", "不安", "考えすぎ", "孤独感", "現実のしんどさ", "責められる感じ", "暇すぎる感じ", "まだ分からない"],
+          rules: [
+            {
+              id: "phone_comment_air",
+              matchAny: ["コメント欄", "ライブ配信", "Discord", "LINE"],
+              need: "つながっていたい",
+              expression: "空気を読む",
+              reaction: "{activity}時間は、ただ消費していたというより、人の反応や場の空気を見ていた時間でもある。",
+              protectedFrom: "その時間は、ひとりで抱えている感じや考えすぎを少し薄める避難場所にもなっていたように見える。",
+              rawTalentStone: "人との距離感や会話の温度に気づけているかもしれない。関係づくりやコミュニティ運営につながる。",
+              smallStep: "居心地がよかった会話、コメント、空気を1つだけ短く残す。"
+            },
+            {
+              id: "phone_feed_interest",
+              matchAny: ["YouTube", "TikTok", "X", "Instagram", "短い動画"],
+              need: "気になってしまう",
+              expression: "拾う",
+              reaction: "{activity}ことの中で、流れてきたものにただ流された部分と、少し引っかかった部分が混ざっている。",
+              protectedFrom: "その時間は、退屈や不安を少し弱める役割もあったかもしれない。",
+              rawTalentStone: "流れてくる情報の中から、自分が引っかかるものを拾えているかもしれない。何に止まったかを集めると、興味の地図になる。",
+              smallStep: "少し手が止まった投稿や動画を1つだけメモする。"
+            },
+            {
+              id: "phone_search_question",
+              matchAny: ["検索", "ニュース", "掲示板"],
+              need: "分かりたい",
+              expression: "調べる",
+              reaction: "{activity}時間は、ただ見ていたというより、分からないことや気になることを追いかけていた。",
+              protectedFrom: "その時間は、先が見えない感じを少しでも確かめる役割があったように見える。",
+              rawTalentStone: "問いを立てて調べる動きが出ているかもしれない。調査、比較、編集、問題発見につながる。",
+              smallStep: "検索した言葉を1つだけ残して、なぜ気になったかを短く添える。"
+            },
+            {
+              id: "phone_favorite_expression",
+              matchAny: ["推し", "漫画"],
+              need: "支えがほしい",
+              expression: "受け取る",
+              reaction: "{activity}ことは、気持ちを支えるものを受け取っていた時間でもある。",
+              protectedFrom: "その時間は、現実のしんどさを少し薄める役割があったように見える。",
+              rawTalentStone: "誰かの表現や存在に支えられる感覚を細かく受け取れているかもしれない。好きの理由を分けると、表現を見る力になる。",
+              smallStep: "好きだった場面を1つ選んで、どこに支えられた感じがしたかを短く残す。"
+            }
+          ]
+        },
+        future: {
+          question: "将来の不安に近いものを選んでください。複数選べます。",
+          tags: ["進路", "学校", "受験", "仕事", "お金", "AI", "才能", "人間関係", "自分のこと", "家族", "同級生", "比べてしまうこと", "置いていかれる感じ", "何者にもなれない感じ", "まだ分からない"],
+          rules: [
+            {
+              id: "future_identity",
+              matchAny: ["才能", "自分のこと", "何者にもなれない感じ"],
+              need: "自分を知りたい",
+              expression: "分けて見る",
+              reaction: "今日は、未来全体というより、自分に何があるのか分からない感じが重く残っていた。",
+              protectedFrom: "その不安は、自分を責め続ける状態から少しでも身を守ろうとしている反応にも見える。",
+              rawTalentStone: "自分に何があるのかを探そうとしている。まだ答えがなくても、反応を集める力に変えられる。",
+              smallStep: "今日は答えを出さず、重かった言葉を1つだけ残す。"
+            },
+            {
+              id: "future_ai_value",
+              matchAny: ["AI"],
+              need: "自分の価値を見つけたい",
+              expression: "問いにする",
+              reaction: "AI時代に、自分の価値が分からなくなる怖さが重く残っていた。",
+              protectedFrom: "その不安は、置いていかれる感じから自分を守ろうとしている反応にも見える。",
+              rawTalentStone: "AI時代の人間の価値を、自分の問題として見ようとしている。これは問いを立てる力になる。",
+              smallStep: "AIに置き換えにくいと感じる人間の行動を、今日1つだけメモする。"
+            },
+            {
+              id: "future_comparison",
+              matchAny: ["同級生", "比べてしまうこと", "置いていかれる感じ"],
+              need: "自分の位置を確かめたい",
+              expression: "整える",
+              reaction: "同じ年齢の人が進んで見えることが、自分の未来の見えなさを強くしていた。",
+              protectedFrom: "その不安は、人と比べ続けて苦しくなる状態から自分を守ろうとしている反応にも見える。",
+              rawTalentStone: "自分の位置を確かめようとしている。目標や環境を選ぶ力に変えられる。",
+              smallStep: "比べた相手の何がまぶしく見えたのかを、1語だけ残す。"
+            },
+            {
+              id: "future_route",
+              matchAny: ["進路", "学校", "受験", "仕事", "お金"],
+              need: "見通しがほしい",
+              expression: "道を分ける",
+              reaction: "未来全体ではなく、進む道や生活の見通しが重く残っていた。",
+              protectedFrom: "その不安は、見えないまま決めさせられる怖さから自分を守ろうとしている反応にも見える。",
+              rawTalentStone: "大きな不安を小さな要素に分けようとしている。計画、整理、相談の力につながる。",
+              smallStep: "今決めること、まだ決めなくていいことを1つずつ分ける。"
+            }
+          ]
+        },
+        free: {
+          question: "今日の状態に近いものを選んでください。分からなければ、そのまま進めます。",
+          tags: ["安心した", "気になった", "しんどかった", "見続けた", "少し楽だった", "比べて落ちた", "退屈だった", "何も感じない", "まだ分からない"],
+          rules: [
+            {
+              id: "free_low_energy",
+              matchAny: ["しんどかった", "何も感じない", "まだ分からない"],
+              need: "休みたい",
+              expression: "置く",
+              reaction: "今日は、何かに変えるより、まず重さをそのまま残しておく日だった。",
+              protectedFrom: "動けなかった時間にも、これ以上削られないための止まり方が含まれていたかもしれない。",
+              rawTalentStone: "自分の状態を無理に良く見せず、少し外から見ようとしている。",
+              smallStep: "今日は追加で動かず、今の言葉を1行だけ残して終わる。"
+            },
+            {
+              id: "free_interest",
+              matchAny: ["安心した", "気になった", "見続けた", "少し楽だった"],
+              need: "反応を知りたい",
+              expression: "拾う",
+              reaction: "今日の中に、小さいけれど残った反応がある。",
+              protectedFrom: "",
+              rawTalentStone: "小さな反応を見落とさず拾えているかもしれない。興味の入口になる。",
+              smallStep: "何に少し反応したのか、単語で1つだけ残す。"
+            }
+          ]
+        }
+      }
+    };
+
+    function getEntryTags(entry) {
+      const logic = responseLogic.entries[entry];
+      return logic.tags || [...logic.activityTags, ...logic.guardTags];
+    }
+
+    const entryConfigs = {
+      game: {
+        inputTitle: "ざっくりで大丈夫です。",
+        inputLead: "今日あったことを、短く書いてください。",
+        inputPlaceholder: "例：ゲーム実況を見てた。RPGをずっとやってた。",
+        questionTitle: "反応した点を選んでください。",
+        questionText: responseLogic.entries.game.question,
+        chips: getEntryTags("game"),
+        multiSelect: true
+      },
+      phone: {
+        inputTitle: "ざっくりで大丈夫です。",
+        inputLead: "今日あったことや、気になっていることを短く書いてください。",
+        inputPlaceholder: "例：スマホをずっと見ていて、罪悪感があった。",
+        questionTitle: "見ていたものを選んでください。",
+        questionText: responseLogic.entries.phone.question,
+        chips: getEntryTags("phone"),
+        multiSelect: true
+      },
+      future: {
+        inputTitle: "すぐ整理できなくても大丈夫です。",
+        inputLead: "今気になっていることを、短く書いてください。",
+        inputPlaceholder: "例：将来が怖い。このままでいいのか分からない。",
+        questionTitle: "不安に近いものを選んでください。",
+        questionText: responseLogic.entries.future.question,
+        chips: getEntryTags("future"),
+        multiSelect: true
+      },
+      free: {
+        inputTitle: "まだまとまってなくて大丈夫。",
+        inputLead: "気になることを、短く書いてください。",
+        inputPlaceholder: "例：何もできなかった。動画を見てた。なんとなく重い。",
+        questionTitle: "今の状態に近いものを選んでください。",
+        questionText: responseLogic.entries.free.question,
+        chips: getEntryTags("free"),
+        multiSelect: true
+      }
+    };
+
+    const screens = Array.from(document.querySelectorAll(".screen"));
+    const stepNow = document.getElementById("stepNow");
+    const backButton = document.getElementById("backButton");
+    const nextButton = document.getElementById("nextButton");
+    const nav = document.querySelector(".nav");
+
+    let currentScreen = 0;
+    let selectedEntry = "game";
+    let selectedChips = [];
+    let currentSession = null;
+
+    function getSessions() {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey) || "[]");
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function setSessions(sessions) {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(sessions));
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function showScreen(index) {
+      currentScreen = Math.max(0, Math.min(index, screens.length - 1));
+      screens.forEach((screen, i) => screen.classList.toggle("hidden", i !== currentScreen));
+      stepNow.textContent = String(currentScreen + 1);
+      backButton.disabled = currentScreen === 0;
+      backButton.style.opacity = currentScreen === 0 ? "0.45" : "1";
+      nav.classList.toggle("hidden-nav", currentScreen === 0);
+      nav.classList.toggle("back-only", [1, 2, 3].includes(currentScreen));
+      const nextLabels = {
+        4: "記録の傾向を見る",
+        5: "感想へ",
+        6: "最初に戻る"
+      };
+      nextButton.textContent = nextLabels[currentScreen] || "次へ";
+    }
+
+    function setEntry(entry) {
+      selectedEntry = entry;
+      selectedChips = [];
+      const config = entryConfigs[entry];
+      document.getElementById("inputTitle").textContent = config.inputTitle;
+      document.getElementById("inputLead").textContent = config.inputLead;
+      document.getElementById("entryInput").placeholder = config.inputPlaceholder;
+      document.getElementById("questionTitle").textContent = config.questionTitle;
+      document.getElementById("questionText").textContent = config.questionText;
+      document.getElementById("answerInput").value = "";
+      renderChips(config.chips);
+      document.getElementById("chipHelp").textContent = config.multiSelect
+        ? "複数選べます。近いものをいくつか選んでください。"
+        : "一番近いものを1つだけ選んでも大丈夫。";
+    }
+
+    function chipDisplayLabel(chip) {
+      const labels = {
+        "話し方": "話し方",
+        "見せ方": "見せ方",
+        "編集": "編集",
+        "音楽": "音・雰囲気",
+        "キャラ": "キャラ",
+        "ストーリー": "物語",
+        "世界観": "世界観",
+        "攻略": "攻略",
+        "上達感": "上達感",
+        "達成感": "達成感",
+        "操作感": "操作感",
+        "協力": "協力",
+        "役割分担": "役割分担",
+        "一緒にいる感じ": "一緒にいる感じ",
+        "緊張感": "緊張感",
+        "癒やし": "安心する感じ",
+        "なんとなく続けた": "なんとなく続けた",
+        "退屈": "退屈だった",
+        "不安": "不安だった",
+        "考えすぎ": "考えすぎていた",
+        "孤独感": "ひとり感があった",
+        "現実のしんどさ": "現実から離れたかった",
+        "責められる感じ": "責められている感じがあった",
+        "暇すぎる感じ": "時間を持て余していた",
+        "比べて落ちた": "人と比べてしんどかった",
+        "置いていかれる感じ": "置いていかれる感じ",
+        "何者にもなれない感じ": "自分の先が見えない"
+      };
+      return labels[chip] || chip;
+    }
+
+    function renderChips(chips) {
+      const multiSelect = entryConfigs[selectedEntry].multiSelect;
+      const container = document.getElementById("questionChips");
+      container.innerHTML = chips
+        .map((chip) => `<button class="chip" type="button" data-chip="${escapeHtml(chip)}">${escapeHtml(chipDisplayLabel(chip))}</button>`)
+        .join("");
+      container.querySelectorAll(".chip").forEach((chipButton) => {
+        chipButton.addEventListener("click", () => {
+          const value = chipButton.dataset.chip;
+          if (multiSelect) {
+            if (selectedChips.includes(value)) {
+              selectedChips = selectedChips.filter((chip) => chip !== value);
+            } else {
+              selectedChips = [...selectedChips, value];
+            }
+          } else {
+            selectedChips = [value];
+          }
+          container.querySelectorAll(".chip").forEach((button) => {
+            button.classList.toggle("active", selectedChips.includes(button.dataset.chip));
+          });
+        });
+      });
+    }
+
+    function inferMaterial(entry, text) {
+      const lowered = text.toLowerCase();
+      if (lowered.includes("youtube") || lowered.includes("実況")) return "ゲーム実況";
+      if (lowered.includes("rpg") || lowered.includes("ロールプレイング")) return "RPG";
+      if (lowered.includes("fps") || lowered.includes("apex") || lowered.includes("valorant") || lowered.includes("スプラ")) return "対戦ゲーム";
+      if (lowered.includes("マイクラ") || lowered.includes("minecraft") || lowered.includes("建築")) return "クラフトゲーム";
+      if (lowered.includes("原神") || lowered.includes("ゼルダ") || lowered.includes("探索")) return "探索ゲーム";
+      if (lowered.includes("音ゲー") || lowered.includes("リズムゲーム")) return "音楽ゲーム";
+      if (lowered.includes("パズル")) return "パズルゲーム";
+      if (lowered.includes("育成")) return "育成ゲーム";
+      if (lowered.includes("ホラー")) return "ホラーゲーム";
+      if (lowered.includes("ノベル")) return "ノベルゲーム";
+      if (lowered.includes("格闘")) return "格闘ゲーム";
+      if (lowered.includes("スポーツ")) return "スポーツゲーム";
+      if (lowered.includes("シミュレーション") || lowered.includes("経営")) return "シミュレーションゲーム";
+      if (entry === "game" || lowered.includes("ゲーム")) return "ゲーム";
+      if (lowered.includes("tiktok") || lowered.includes("ショート")) return "ショート動画";
+      if (lowered.includes("x") || lowered.includes("twitter")) return "X";
+      if (lowered.includes("instagram") || lowered.includes("インスタ")) return "Instagram";
+      if (lowered.includes("line")) return "LINE";
+      if (lowered.includes("discord")) return "Discord";
+      if (lowered.includes("配信") || lowered.includes("twitch")) return "ライブ配信";
+      if (lowered.includes("ニュース")) return "ニュース";
+      if (lowered.includes("検索")) return "検索";
+      if (lowered.includes("掲示板")) return "掲示板";
+      if (lowered.includes("動画")) return "動画";
+      if (entry === "phone" || lowered.includes("スマホ") || lowered.includes("sns")) return "スマホ";
+      if (entry === "future" || lowered.includes("将来") || lowered.includes("進路")) return "将来";
+      if (lowered.includes("裁縫") || lowered.includes("作る")) return "ものづくり";
+      return "日常";
+    }
+
+    function inferPhoneActivity(text, chips = []) {
+      const lowered = text.toLowerCase();
+      if (chips.includes("YouTube")) return "YouTubeを見ていた";
+      if (chips.includes("TikTok")) return "TikTokを見ていた";
+      if (chips.includes("X")) return "Xを見ていた";
+      if (chips.includes("Instagram")) return "Instagramを見ていた";
+      if (chips.includes("LINE")) return "LINEを見ていた";
+      if (chips.includes("Discord")) return "Discordを見ていた";
+      if (chips.includes("漫画")) return "スマホで漫画を読んでいた";
+      if (chips.includes("推し")) return "推しの投稿や動画を見ていた";
+      if (chips.includes("コメント欄")) return "コメント欄を見ていた";
+      if (chips.includes("ライブ配信")) return "ライブ配信を見ていた";
+      if (chips.includes("ニュース")) return "ニュースを見ていた";
+      if (chips.includes("検索")) return "気になることを検索していた";
+      if (chips.includes("掲示板")) return "掲示板を見ていた";
+      if (chips.includes("短い動画")) return "短い動画を見ていた";
+      if (lowered.includes("youtube")) return "YouTubeを見ていた";
+      if (lowered.includes("tiktok")) return "TikTokを見ていた";
+      if (lowered.includes("x") || lowered.includes("twitter")) return "Xを見ていた";
+      if (lowered.includes("instagram") || lowered.includes("インスタ")) return "Instagramを見ていた";
+      if (lowered.includes("line")) return "LINEを見ていた";
+      if (lowered.includes("discord")) return "Discordを見ていた";
+      if (lowered.includes("漫画")) return "スマホで漫画を読んでいた";
+      if (lowered.includes("配信") || lowered.includes("twitch")) return "ライブ配信を見ていた";
+      if (lowered.includes("ニュース")) return "ニュースを見ていた";
+      if (lowered.includes("検索")) return "気になることを検索していた";
+      if (lowered.includes("掲示板")) return "掲示板を見ていた";
+      if (lowered.includes("ショート")) return "短い動画を見ていた";
+      if (lowered.includes("動画")) return "スマホで動画を見ていた";
+      return "スマホを見ていた";
+    }
+
+    function getGuardChips(chips) {
+      const activityChips = ["YouTube", "TikTok", "X", "Instagram", "LINE", "Discord", "漫画", "推し", "コメント欄", "ライブ配信", "ニュース", "検索", "掲示板", "短い動画"];
+      return chips.filter((chip) => !activityChips.includes(chip) && chip !== "まだ分からない");
+    }
+
+    function inferState(entry, text) {
+      const lowered = text.toLowerCase();
+      if (hasHighRiskText(text)) return "安全優先";
+      if (lowered.includes("消えたい") || lowered.includes("無理")) return "休息優先";
+      if (entry === "future" || entry === "phone") return "受け止め優先";
+      if (lowered.includes("不安") || lowered.includes("罪悪感") || lowered.includes("しんど")) return "受け止め優先";
+      return "少し見られる";
+    }
+
+    function formatChips(chips) {
+      if (chips.length === 0) return "";
+      if (chips.length === 1) return chips[0];
+      return chips.slice(0, -1).join("、") + " と " + chips[chips.length - 1];
+    }
+
+    function hasAny(chips, values) {
+      return values.some((value) => chips.includes(value));
+    }
+
+    function getGuardPhrase(chips) {
+      const guardMap = {
+        "退屈": "退屈",
+        "不安": "不安",
+        "考えすぎ": "考えすぎ",
+        "孤独感": "ひとりで抱えている感じ",
+        "現実のしんどさ": "現実のしんどさ",
+        "責められる感じ": "責められている感じ",
+        "暇すぎる感じ": "時間だけが余っている感じ"
+      };
+      const phrases = getGuardChips(chips).map((chip) => guardMap[chip]).filter(Boolean);
+      return formatChips(phrases.slice(0, 2));
+    }
+
+    function getFutureFocus(chips) {
+      if (chips.includes("何者にもなれない感じ")) return "自分の先が見えない感じ";
+      if (chips.includes("同級生") || chips.includes("比べてしまうこと")) return "同じ年齢の人と比べてしまう苦しさ";
+      if (chips.includes("進路")) return "進路を決めなきゃいけない重さ";
+      if (chips.includes("学校")) return "学校のこと";
+      if (chips.includes("受験")) return "受験のこと";
+      if (chips.includes("仕事")) return "将来の仕事が見えない怖さ";
+      if (chips.includes("お金")) return "お金の不安";
+      if (chips.includes("AI")) return "AI時代に自分の価値が分からなくなる怖さ";
+      if (chips.includes("才能")) return "自分に何があるのか分からない感じ";
+      if (chips.includes("置いていかれる感じ")) return "置いていかれる感じ";
+      if (chips.includes("人間関係")) return "人との関係が続くかどうかの不安";
+      if (chips.includes("家族")) return "家族とのこと";
+      if (chips.includes("自分のこと")) return "自分がどうなるのか分からない感じ";
+      return "";
+    }
+
+    function getTagAliases(tag) {
+      const aliases = {
+        "YouTube": ["youtube", "ユーチューブ"],
+        "TikTok": ["tiktok", "ティックトック"],
+        "X": ["twitter", "ツイッター"],
+        "Instagram": ["instagram", "インスタ"],
+        "LINE": ["line"],
+        "Discord": ["discord"],
+        "AI": ["ai", "人工知能"],
+        "検索": ["検索", "調べ"],
+        "短い動画": ["ショート", "短い動画"],
+        "ライブ配信": ["配信", "ライブ", "twitch"],
+        "比べてしまうこと": ["比べ", "比較"],
+        "置いていかれる感じ": ["置いていかれ"],
+        "何者にもなれない感じ": ["何者", "なれない"],
+        "現実のしんどさ": ["現実", "しんど"],
+        "責められる感じ": ["責め"]
+      };
+      return aliases[tag] || [tag];
+    }
+
+    function inferTextChips(entry, text) {
+      const lowered = text.toLowerCase();
+      return getEntryTags(entry).filter((tag) => {
+        if (tag === "まだ分からない") return false;
+        return getTagAliases(tag).some((alias) => lowered.includes(alias.toLowerCase()));
+      });
+    }
+
+    function getEffectiveChips(entry, chips, text) {
+      return Array.from(new Set([...chips, ...inferTextChips(entry, text)]));
+    }
+
+    function findMatchingRule(entry, chips) {
+      const rules = responseLogic.entries[entry].rules || [];
+      return rules.find((rule) => hasAny(chips, rule.matchAny || [])) || null;
+    }
+
+    function hasHighRiskText(text) {
+      const normalized = text.replace(/\s+/g, "");
+      return responseLogic.riskRules.highRiskInputPatterns.some((pattern) => normalized.includes(pattern));
+    }
+
+    function fillTemplate(template, context) {
+      if (!template) return "";
+      return template
+        .replaceAll("{material}", context.material)
+        .replaceAll("{activity}", context.activity)
+        .replaceAll("{guardPhrase}", context.guardPhrase || "何か重いもの");
+    }
+
+    function createRuleContext(entry, chips, material, text) {
+      return {
+        material,
+        activity: inferPhoneActivity(text, chips),
+        guardPhrase: getGuardPhrase(chips),
+        focus: getFutureFocus(chips)
+      };
+    }
+
+    function inferReaction(entry, chips, answer, material, text, rule = null) {
+      if (answer.trim()) return answer.trim();
+      const context = createRuleContext(entry, chips, material, text);
+      if (rule?.reaction) return fillTemplate(rule.reaction, context);
+      const joined = formatChips(chips);
+      if (entry === "phone" && joined) {
+        const activity = inferPhoneActivity(text, chips);
+        const guardPhrase = getGuardPhrase(chips);
+        if (guardPhrase) {
+          return activity + "時間は、ただの無駄ではなく、" + guardPhrase + "を少し弱める時間にもなっていたように見える。";
+        }
+        return activity + "ことの中に、少し引っかかったものが残っているように見える。";
+      }
+      if (entry === "future" && joined) {
+        const focus = getFutureFocus(chips);
+        if (focus) return "今日は、未来全体というより「" + focus + "」が重く残っていたように見える。";
+        return joined + " が、まだ分けきれない重さとして残っていたように見える。";
+      }
+      if (entry === "game" && joined) {
+        if (hasAny(chips, ["話し方", "見せ方", "編集"])) return material + " の中でも、ただ内容を見るだけでなく、伝え方や見せ方に目が向いていた。";
+        if (chips.includes("一緒にいる感じ")) return "ひとりで見ていても、場に混ざっているような感覚に反応していた。";
+        if (hasAny(chips, ["上達感", "達成感", "攻略"])) return "少しずつ進む感じや、できるようになる流れに反応していた。";
+        if (hasAny(chips, ["世界観", "キャラ", "ストーリー", "音楽"])) return "遊び方だけでなく、その世界の空気や物語に反応していた。";
+        if (hasAny(chips, ["協力", "役割分担"])) return "誰かと役割を分けたり、同じ目的に向かう感じに反応していた。";
+        if (chips.includes("操作感")) return "思った通りに動かせる気持ちよさに反応していた。";
+        if (chips.includes("緊張感")) return "少し緊張する場面で、集中が高まる感じに反応していた。";
+        if (chips.includes("癒やし")) return "力を抜ける感じや、安心できる空気に反応していた。";
+      }
+      if (entry === "future") return "まだ名前をつけきれない重さが残っている。今は、細かく分ける前の段階として扱っていい。";
+      if (entry === "phone" && text) return inferPhoneActivity(text, chips) + "時間の中に、何か引っかかったものがある。";
+      if (entry === "free" && joined) return joined + " という反応が、今日の中に残っている。";
+      return "その中に、少しだけ反応が残っている。";
+    }
+
+    function inferGuarded(entry, chips, rule = null) {
+      if (rule?.protectedFrom) {
+        return fillTemplate(rule.protectedFrom, createRuleContext(entry, chips, "", ""));
+      }
+      if (entry === "phone") {
+        const guardPhrase = getGuardPhrase(chips);
+        if (guardPhrase) return "その時間は、" + guardPhrase + "を少し薄めるための避難場所にもなっていたように見える。";
+        return "その時間は、何かを解決するためではなく、いったん考え続ける状態を止める役割があったのかもしれない。";
+      }
+      if (entry === "future") {
+        if (chips.includes("何者にもなれない感じ")) {
+          return "その不安は、未来が見えないまま自分を責め続けてしまう状態から、少しでも身を守ろうとしている反応にも見える。";
+        }
+        if (chips.includes("同級生")) {
+          return "その不安は、同じ年齢の人が前に進んで見える苦しさから、自分を守ろうとしている反応にも見える。";
+        }
+        if (chips.includes("比べてしまうこと")) {
+          return "その不安は、人と比べ続けて苦しくなる状態から、自分を守ろうとしている反応にも見える。";
+        }
+        return "その不安は、先が見えないまま動かされる怖さから、自分を守ろうとしている反応にも見える。";
+      }
+      return "";
+    }
+
+    function inferNeed(entry, chips, rule = null) {
+      if (rule?.need) return rule.need;
+      if (entry === "phone") return "落ち着きたい";
+      if (entry === "future") return "見通しがほしい";
+      if (hasAny(chips, ["一緒にいる感じ", "協力", "役割分担"])) return "つながっていたい";
+      if (hasAny(chips, ["上達感", "達成感", "攻略", "操作感"])) return "できるようになりたい";
+      if (hasAny(chips, ["話し方", "見せ方", "編集"])) return "わかりやすさに触れたい";
+      if (hasAny(chips, ["世界観", "キャラ", "ストーリー", "音楽"])) return "世界に入りたい";
+      if (chips.includes("緊張感")) return "集中したい";
+      if (chips.includes("癒やし")) return "安心したい";
+      return "気になってしまう";
+    }
+
+    function inferExpression(entry, chips, rule = null) {
+      if (rule?.expression) return rule.expression;
+      if (entry === "future") return "分けて見る";
+      if (entry === "phone") return "少し外から見る";
+      if (hasAny(chips, ["見せ方", "話し方", "編集"])) return "気づく";
+      if (hasAny(chips, ["上達感", "達成感", "攻略", "操作感"])) return "深める";
+      if (hasAny(chips, ["協力", "役割分担", "一緒にいる感じ"])) return "つなぐ";
+      if (hasAny(chips, ["世界観", "キャラ", "ストーリー", "音楽"])) return "つくる";
+      return "つかむ";
+    }
+
+    function inferOrigin(material, need, expression, chips, entry, rule = null) {
+      if (rule?.rawTalentStone) {
+        return fillTemplate(rule.rawTalentStone, createRuleContext(entry, chips, material, document.getElementById("entryInput").value.trim()));
+      }
+      if (entry === "phone") {
+        const activity = inferPhoneActivity(document.getElementById("entryInput").value.trim(), chips);
+        if (chips.includes("コメント欄")) {
+          return "人の反応や空気の流れに気づけているかもしれない。今はコメント欄で出ているけれど、場づくりや発信の観察にもつながる。";
+        }
+        if (chips.includes("Discord") || chips.includes("LINE")) {
+          return "人との距離感や会話の温度に気づけているかもしれない。関係づくりやコミュニティ運営につながる。";
+        }
+        if (chips.includes("推し")) {
+          return "誰かの表現や存在に支えられる感覚を、細かく受け取れているかもしれない。好きの理由を分けると、表現を見る力になる。";
+        }
+        if (hasAny(chips, ["検索", "ニュース", "掲示板"])) {
+          return "分からないことや気になることを追いかけているかもしれない。問いを立てる力や調べる力につながる。";
+        }
+        if (chips.includes("ライブ配信")) {
+          return "その場で起きている空気や反応を受け取れているかもしれない。場づくりやリアルタイムの表現を見る力につながる。";
+        }
+        if (hasAny(chips, ["X", "TikTok", "Instagram", "YouTube", "短い動画"])) {
+          return "流れてくる情報の中から、自分が引っかかるものを拾えているかもしれない。何に止まったかを集めると、興味の地図になる。";
+        }
+        return activity + "時間をただ悪いものにせず、そこにあった反応を取り出せるかもしれない。";
+      }
+      if (entry === "future") {
+        if (chips.includes("AI")) {
+          return "AI時代に自分の価値が見えにくくなる怖さを、そのまま見ようとしている。これは、これからの働き方を考える入口になる。";
+        }
+        if (chips.includes("才能")) {
+          return "自分に何があるのかを探そうとしている。まだ答えがなくても、反応を集める力に変えられる。";
+        }
+        if (chips.includes("同級生") || chips.includes("比べてしまうこと")) {
+          return "人と比べて苦しくなる中でも、自分の位置を確かめようとしている。これは、目標や環境を選ぶ力にも変えられる。";
+        }
+        if (chips.includes("何者にもなれない感じ")) {
+          return "未来が見えない怖さを、あいまいなまま終わらせず言葉にしようとしている。";
+        }
+        return "怖さをひとまとめにせず、少しずつ分けて見ようとしている。";
+      }
+      if (chips.includes("一緒にいる感じ")) {
+        return "人がひとりじゃないと感じられる空気や距離感に反応しているかもしれない。場づくりやコミュニティ設計につながる。";
+      }
+      if (hasAny(chips, ["話し方", "見せ方", "編集"])) {
+        return "人が見続けたくなる話し方や見せ方に気づけるかもしれない。説明、編集、発信の力につながる。";
+      }
+      if (hasAny(chips, ["上達感", "達成感", "攻略", "操作感"])) {
+        return "少しずつ分かる、できるようになる流れをつかめているかもしれない。学習設計や攻略する力につながる。";
+      }
+      if (hasAny(chips, ["世界観", "キャラ", "ストーリー", "音楽"])) {
+        return "世界に入り込みながら、その中の空気や仕組みを受け取れているかもしれない。企画や創作の入口になる。";
+      }
+      if (hasAny(chips, ["協力", "役割分担"])) {
+        return "人と役割を分けて進める感覚に反応しているかもしれない。チームづくりや段取りの力につながる。";
+      }
+      if (material !== "日常") {
+        return material + " の中で、自分がどこに惹かれるのかをつかめているかもしれない。";
+      }
+      return "まだはっきりしなくても、自分の反応を少し見ようとしている。";
+    }
+
+    function inferStep(entry, chips, text, rule = null) {
+      if (rule?.smallStep) {
+        return fillTemplate(rule.smallStep, createRuleContext(entry, chips, inferMaterial(entry, text), text));
+      }
+      if (entry === "phone") {
+        const activity = inferPhoneActivity(text, chips);
+        const guardPhrase = getGuardPhrase(chips);
+        if (activity.includes("LINE")) return "LINEで気持ちが動いたやり取りがあれば、1つだけ短くメモする。";
+        if (activity.includes("Discord")) return "Discordで居心地がよかった会話や空気を、1つだけ短くメモする。";
+        if (activity.includes("漫画")) return "読んでいた中で少し残った場面を、1つだけ短くメモする。";
+        if (activity.includes("コメント欄")) return "コメント欄で少し気になった言葉を、1つだけ短くメモする。";
+        if (activity.includes("検索")) return "検索した言葉を1つだけ残して、なぜ気になったかを短く添える。";
+        if (activity.includes("ニュース")) return "読んだニュースの中で、少し引っかかったテーマを1つだけ残す。";
+        if (activity.includes("ライブ配信")) return "配信で空気が変わった場面を1つだけメモする。";
+        if (guardPhrase) return "次に同じ感じが出たら、減らす前に「何から離れたかったか」を1語だけ残す。";
+        return "スマホで触れていたものの中で、少し気になった投稿や動画を1つだけメモする。";
+      }
+      if (entry === "future") {
+        const focus = getFutureFocus(chips);
+        if (focus) return "今日は答えを出さず、「" + focus + "」だけを今日の言葉として残す。";
+        return "余力がある日に、重さの中身を1つだけ分けて言葉にする。";
+      }
+      if (hasAny(chips, ["見せ方", "話し方", "編集"])) return "見続けたくなった場面を1つ選んで、何がよかったかを短くメモする。";
+      if (hasAny(chips, ["上達感", "達成感", "攻略", "操作感"])) return "少し気持ちよかった場面を1つ選んで、何が進んだ感じだったかを短くメモする。";
+      if (hasAny(chips, ["世界観", "キャラ", "ストーリー", "音楽"])) return "その世界やキャラのどこが残ったかを、1行だけ残してみる。";
+      if (hasAny(chips, ["協力", "役割分担"])) return "一緒に動きやすかった場面があれば、何がよかったかを1つだけ残す。";
+      return "今日は、気になったところを1つだけ短く残して終わっていい。";
+    }
+
+    function buildSession() {
+      const entryText = document.getElementById("entryInput").value.trim();
+      const answerText = document.getElementById("answerInput").value.trim();
+      const material = inferMaterial(selectedEntry, entryText);
+      const state = inferState(selectedEntry, entryText);
+      const effectiveChips = getEffectiveChips(selectedEntry, selectedChips, entryText + " " + answerText);
+      const matchedRule = findMatchingRule(selectedEntry, effectiveChips);
+      const riskPolicy = hasHighRiskText(entryText + answerText) ? responseLogic.riskRules.responsePolicy : null;
+      const reaction = riskPolicy
+        ? riskPolicy.reaction
+        : inferReaction(selectedEntry, effectiveChips, answerText, material, entryText, matchedRule);
+      const guarded = riskPolicy
+        ? riskPolicy.protectedFrom
+        : inferGuarded(selectedEntry, effectiveChips, matchedRule);
+      const need = riskPolicy ? "安全を優先したい" : inferNeed(selectedEntry, effectiveChips, matchedRule);
+      const expression = riskPolicy ? "つながる" : inferExpression(selectedEntry, effectiveChips, matchedRule);
+      const origin = riskPolicy
+        ? riskPolicy.rawTalentStone
+        : inferOrigin(material, need, expression, effectiveChips, selectedEntry, matchedRule);
+      const step = riskPolicy
+        ? riskPolicy.smallStep
+        : inferStep(selectedEntry, effectiveChips, entryText, matchedRule);
+
+      return {
+        entry: selectedEntry,
+        today: entryText || entryConfigs[selectedEntry].inputPlaceholder.replace("例：", ""),
+        material,
+        state,
+        reaction,
+        guarded,
+        need,
+        expression,
+        origin,
+        step,
+        ruleId: matchedRule?.id || "",
+        isHighRisk: Boolean(riskPolicy),
+        selectedChips,
+        chips: effectiveChips,
+        answerText,
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function getOriginTags(session) {
+      const tags = [];
+      if (session.expression) tags.push(graphLabel(session.expression));
+      if (session.need) tags.push(graphLabel(session.need));
+      if (session.ruleId?.includes("search")) tags.push("問題発見");
+      if (session.ruleId?.includes("presentation")) tags.push("発信");
+      if (session.ruleId?.includes("world")) tags.push("企画");
+      if (session.ruleId?.includes("mastery")) tags.push("攻略");
+      if (session.ruleId?.includes("social") || session.ruleId?.includes("comment")) tags.push("場づくり");
+      return Array.from(new Set(tags)).slice(0, 4);
+    }
+
+    function renderSummary(session) {
+      document.getElementById("sumToday").textContent = session.today;
+      document.getElementById("sumReactionTitle").textContent =
+        session.entry === "game" ? "心が動いたところ" : "残っていた感じ";
+      document.getElementById("sumReaction").textContent = session.reaction;
+      document.getElementById("sumOrigin").textContent = session.origin;
+      document.getElementById("sumStep").textContent = session.step;
+      const originTags = getOriginTags(session);
+      document.getElementById("originTags").innerHTML =
+        originTags.map((tag) => `<span>${tag}</span>`).join("");
+
+      const safetyWrap = document.getElementById("sumSafetyWrap");
+      const originTitle = document.getElementById("sumOriginTitle");
+      const stepTitle = document.getElementById("sumStepTitle");
+      if (session.isHighRisk) {
+        safetyWrap.classList.remove("hidden");
+        originTitle.textContent = "今は強みに変えなくていい";
+        stepTitle.textContent = "今すぐ優先すること";
+      } else {
+        safetyWrap.classList.add("hidden");
+        originTitle.textContent = "見えてきた興味・強みのヒント";
+        stepTitle.textContent = "次にできそうなこと";
+      }
+
+      const guardWrap = document.getElementById("sumGuardWrap");
+      if (session.guarded) {
+        document.getElementById("sumGuarded").textContent = session.guarded;
+        guardWrap.classList.remove("hidden");
+      } else {
+        guardWrap.classList.add("hidden");
+      }
+    }
+
+    function topCounts(items, key) {
+      const counts = {};
+      items.forEach((item) => {
+        const value = item[key];
+        if (!value) return;
+        counts[value] = (counts[value] || 0) + 1;
+      });
+      return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function chipHtml(values) {
+      return values
+        .filter(Boolean)
+        .slice(0, 4)
+        .map((value) => `<span class="graph-chip">${escapeHtml(value)}</span>`)
+        .join("");
+    }
+
+    function graphLabel(value) {
+      const labels = {
+        "問いにする": "問いを立てる",
+        "拾う": "引っかかりを拾う",
+        "つくる": "世界を受け取る",
+        "つかむ": "反応をつかむ",
+        "置く": "今の状態を残す",
+        "比べて落ちた": "人と比べてしんどかった",
+        "何者にもなれない感じ": "自分の先が見えない",
+        "分けて見る": "不安を分ける",
+        "整える": "自分の位置を整える",
+        "少し外から見る": "少し外から見る",
+        "気になってしまう": "気になった",
+        "世界に入りたい": "世界観",
+        "支えがほしい": "支えになるもの",
+        "見通しがほしい": "見通し",
+        "自分の価値を見つけたい": "自分の価値",
+        "自分の位置を確かめたい": "自分の位置",
+        "自分を知りたい": "自分を知る",
+        "反応を知りたい": "反応を知る",
+        "休みたい": "休む",
+        "落ち着きたい": "落ち着く",
+        "できるようになりたい": "上達",
+        "つながっていたい": "つながり",
+        "分かりたい": "調べる",
+        "安心したい": "安心",
+        "集中したい": "集中"
+      };
+      return labels[value] || value;
+    }
+
+    function abilityLabel(session) {
+      if (session.ruleId?.includes("search")) return "気になることを問いにできる";
+      if (session.ruleId?.includes("presentation")) return "伝わる見せ方に気づける";
+      if (session.ruleId?.includes("world")) return "世界観を受け取れる";
+      if (session.ruleId?.includes("mastery")) return "上達の流れをつかめる";
+      if (session.ruleId?.includes("social") || session.ruleId?.includes("comment")) return "場の空気や距離感に気づける";
+      if (session.ruleId?.includes("favorite")) return "好きの理由を受け取れる";
+      if (session.ruleId?.includes("comparison")) return "自分の位置を確かめられる";
+      if (session.ruleId?.includes("identity")) return "自分を見つめられる";
+      if (session.ruleId?.includes("ai_value")) return "人間の価値を問いにできる";
+      if (session.ruleId?.includes("low_energy")) return "自分の状態を言葉に残せる";
+      if (session.ruleId?.includes("interest")) return "小さな反応に気づける";
+      if (session.expression === "拾う") return "引っかかりを拾える";
+      if (session.expression === "つくる") return "世界を形にできる";
+      if (session.expression === "つかむ") return "反応をつかめる";
+      if (session.expression === "置く") return "自分の状態を言葉に残せる";
+      return graphLabel(session.expression);
+    }
+
+    function renderGraph(session) {
+      const sessions = getSessions();
+      const materials = topCounts(sessions, "material");
+      const needs = topCounts(sessions, "need");
+      const expressions = topCounts(sessions, "expression");
+      const todayPoints = [
+        graphLabel(session.material),
+        graphLabel(session.chips?.[0]),
+        graphLabel(session.expression)
+      ];
+      const likelyLines = [
+        graphLabel(needs[0]?.[0]),
+        graphLabel(expressions[0]?.[0]),
+        session.ruleId?.includes("search") ? "問題発見" : session.need
+      ].map(graphLabel);
+      const growingStone = abilityLabel(session);
+      const graphList = document.getElementById("graphList");
+      graphList.innerHTML = `
+        <div class="graph-panel">
+          <span class="graph-section-title">今日のテーマ</span>
+          <div class="graph-chip-row">${chipHtml(todayPoints)}</div>
+          <div class="graph-core">
+            <div class="graph-gem">◇</div>
+          </div>
+          <span class="graph-section-title">よく出るテーマ</span>
+          <div class="graph-chip-row">${chipHtml(likelyLines)}</div>
+          <div class="graph-result">
+            <small>得意かもしれないこと</small>
+            <strong>${escapeHtml(growingStone)}</strong>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("graphNote").textContent =
+        sessions.length > 1
+          ? "この端末には " + sessions.length + " 件の記録が保存されています。記録が増えると、よく出るテーマが見えやすくなります。"
+          : "記録が増えると、よく出てくるテーマを表示します。";
+    }
+
+    function saveCurrentSession(session) {
+      const sessions = getSessions();
+      sessions.push(session);
+      return setSessions(sessions);
+    }
+
+    function resetLogs() {
+      localStorage.removeItem(storageKey);
+      window.alert("この端末に保存していた記録を消しました。");
+    }
+
+    function openFeedbackForm() {
+      if (feedbackFormUrl) {
+        window.open(feedbackFormUrl, "_blank", "noopener,noreferrer");
+      } else {
+        window.alert("感想フォームはまだ準備中です。");
+      }
+    }
+
+    document.querySelectorAll("[data-entry]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setEntry(button.dataset.entry);
+        showScreen(2);
+      });
+    });
+
+    document.querySelectorAll("[data-next]").forEach((button) => {
+      button.addEventListener("click", () => {
+        showScreen(currentScreen + 1);
+      });
+    });
+
+    document.querySelectorAll(".feedback-options").forEach((group) => {
+      group.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          group.querySelectorAll("button").forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+        });
+      });
+    });
+
+    document.getElementById("toQuestionButton").addEventListener("click", () => {
+      showScreen(3);
+    });
+
+    document.getElementById("toSummaryButton").addEventListener("click", () => {
+      currentSession = buildSession();
+      renderSummary(currentSession);
+      saveCurrentSession(currentSession);
+      renderGraph(currentSession);
+      showScreen(4);
+    });
+
+    document.getElementById("feedbackButton").addEventListener("click", openFeedbackForm);
+    document.getElementById("resetLogButton").addEventListener("click", resetLogs);
+
+    backButton.addEventListener("click", () => {
+      if (currentScreen === 0) return;
+      showScreen(currentScreen - 1);
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (currentScreen === screens.length - 1) {
+        showScreen(0);
+        return;
+      }
+      if (currentScreen === 1) {
+        showScreen(2);
+        return;
+      }
+      if (currentScreen === 3) {
+        currentSession = buildSession();
+        renderSummary(currentSession);
+        saveCurrentSession(currentSession);
+        renderGraph(currentSession);
+      }
+      showScreen(currentScreen + 1);
+    });
+
+    setEntry("game");
+    showScreen(0);
+  </script>
+</body>
+</html>

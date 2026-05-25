@@ -1,0 +1,598 @@
+{
+  "schemaVersion": "0.2.0",
+  "updatedAt": "2026-05-25",
+  "product": "MiraKuru",
+  "purpose": "若者の日々の行動、不安、好き、画面時間を責めずに分解し、才能の原石と小さな一歩へ変換するための返答ロジック定義。",
+  "stance": {
+    "oneLine": "評価せず、急がせず、行動の裏にある欲求と反応を見て、本人が扱える小さな一歩に変える。",
+    "notADiagnosis": true,
+    "avoidMakingClaimsLike": [
+      "あなたはこういう人です",
+      "これは依存です",
+      "絶対に才能があります",
+      "明日はスマホを減らそう",
+      "大丈夫",
+      "頑張れ",
+      "わかってると思うけど"
+    ],
+    "preferredTone": [
+      "断定しすぎない",
+      "でも曖昧すぎない",
+      "責めない",
+      "軽すぎる励ましをしない",
+      "本人の一日を素材として扱う"
+    ]
+  },
+  "evidenceBase": [
+    {
+      "id": "cfa_internet_2027_preliminary",
+      "type": "official_survey",
+      "title": "令和7年度 青少年のインターネット利用環境実態調査 速報",
+      "url": "https://www.cfa.go.jp/assets/contents/node/basic_page/field_ref_resources/9a55b57d-cd9d-4cf6-8ed4-3da8efa12d63/23fcf9bc/20260226_policies_youth-kankyou_internet_research_results-etc_20.pdf",
+      "usableClaims": [
+        "10歳から17歳の青少年のインターネット利用率は99.0%。",
+        "利用機器はスマートフォン78.5%、GIGA端末72.7%、ゲーム機66.2%。",
+        "平日1日あたりの平均利用時間は約5時間27分、高校生は約6時間44分。",
+        "目的別では趣味・娯楽が最も長く、約3時間1分。"
+      ],
+      "productImplication": "画面時間を例外扱いせず、若者の日常素材として扱う。単純な制限ではなく、何を見て何に反応したかを聞く。"
+    },
+    {
+      "id": "cfa_youth_consciousness_2024",
+      "type": "official_survey",
+      "title": "我が国と諸外国のこどもと若者の意識に関する調査 令和5年度",
+      "url": "https://www.cfa.go.jp/assets/contents/node/basic_page/field_ref_resources/d0d674d3-bf0a-4552-847c-e9af2c596d4e/3b48b9f7/20240620_policies_kodomo-research_02.pdf",
+      "usableClaims": [
+        "日本のこども・若者で、自分の将来のことを心配している割合は76.4%。",
+        "お金のことを心配している割合は72.2%、進学のことは69.1%。",
+        "インターネット空間について、ありのままでいられる36.2%、新しいことにチャレンジできる32.1%、誰かと一緒に過ごせる23.9%、悩みの相談ができる15.1%という回答がある。"
+      ],
+      "productImplication": "将来不安は特殊な弱さではなく主要課題。ネット空間は逃避だけでなく居場所、探索、挑戦にもなる。"
+    },
+    {
+      "id": "ryan_deci_2000_sdt",
+      "type": "psychology_theory",
+      "title": "Self-determination theory and the facilitation of intrinsic motivation, social development, and well-being",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11392867/",
+      "usableClaims": [
+        "自己決定理論では、自律性、 competence、関係性の3つの心理的欲求が重視される。",
+        "これらが満たされると自己動機づけや精神的健康につながり、阻害されると動機づけやウェルビーイングが下がる。"
+      ],
+      "productImplication": "返答は、本人の自律性を奪わず、できる感覚とつながりを小さく回復させる。"
+    },
+    {
+      "id": "social_media_anxiety_review_2025",
+      "type": "systematic_review",
+      "title": "Associations Between Social Media Use and Anxiety Among Adolescents",
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S1054139X24004336",
+      "usableClaims": [
+        "青年期のSNS利用と不安の関連は混合的。",
+        "問題的利用やスクリーンタイムで不安との正の関連が見られやすい。",
+        "今後は問題的利用だけに偏らない測定が必要。"
+      ],
+      "productImplication": "MiraKuruは時間だけで判断しない。何を見たか、なぜ見たか、何を守っていたか、見たあと何が残ったかを扱う。"
+    },
+    {
+      "id": "soumu_media_usage_2025",
+      "type": "official_survey",
+      "title": "令和6年度 情報通信メディアの利用時間と情報行動に関する調査",
+      "url": "https://www.soumu.go.jp/menu_news/s-news/01iicp01_02000125.html",
+      "usableClaims": [
+        "10代、20代のモバイル機器によるインターネット利用は平日でも長時間化している。",
+        "動画投稿・共有サービス、ソーシャルメディアの利用時間が若年層で大きい。"
+      ],
+      "productImplication": "MiraKuruの入口は日記ではなく、動画、SNS、スマホ、検索という日常行動から入る。"
+    },
+    {
+      "id": "niye_highschool_sns_2024",
+      "type": "public_research",
+      "title": "高校生のSNSの利用に関する調査報告書 日本・米国・中国・韓国の比較",
+      "url": "https://www.niye.go.jp/%E9%AB%98%E6%A0%A1%E7%94%9F%E3%81%AEsns%E3%81%AE%E5%88%A9%E7%94%A8%E3%81%AB%E9%96%A2%E3%81%99%E3%82%8B%E8%AA%BF%E6%9F%BB%E5%A0%B1%E5%91%8A%E6%9B%B8%E3%83%BC%E6%97%A5%E6%9C%AC%E3%83%BB%E7%B1%B3.html",
+      "usableClaims": [
+        "日本の高校生はSNSの複数アカウント使い分けが多い。",
+        "直接話すよりSNSの方が気持ちを伝えやすいと感じる層がいる。"
+      ],
+      "productImplication": "若者は本音を全開で出したいのではなく、見せ方と距離を調整しながら置きたい。低圧な入力が必要。"
+    },
+    {
+      "id": "docomo_mobile_society_sns_2025",
+      "type": "research_institute_survey",
+      "title": "SNSでは気軽に本音が言える 15から24歳の約半数",
+      "url": "https://www.moba-ken.jp/project/lifestyle/20250313.html",
+      "usableClaims": [
+        "15から24歳の約半数がSNSでは気軽に本音が言えると回答している。",
+        "一方で、発信内容を気にするのが面倒と感じる若者も多い。"
+      ],
+      "productImplication": "MiraKuruは自由記述だけにせず、タグ選択、一言、未選択でも進める設計にする。"
+    },
+    {
+      "id": "docomo_mobile_society_live_comment_2024_2025",
+      "type": "research_institute_survey",
+      "title": "若年層のコメント・ライブ配信利用",
+      "url": "https://www.moba-ken.jp/project/service/20240513.html",
+      "usableClaims": [
+        "YouTube Liveは10代で認知率が高く、一定割合が視聴している。",
+        "SNS利用者にはコメントしない静かな参加者も多い。"
+      ],
+      "productImplication": "コメント欄やライブ配信は暇つぶしだけでなく、半参加、共在感、場の空気を読む素材として扱う。"
+    },
+    {
+      "id": "mof_oshi_2025",
+      "type": "public_finance_article",
+      "title": "推し活 若年層を中心に急成長する消費形態",
+      "url": "https://www.mof.go.jp/public_relations/finance/2025011/202511f.pdf",
+      "usableClaims": [
+        "推し活は若者の日常生活に組み込まれている消費・感情行動として扱える。",
+        "推し活には余暇、意味づけ、感情調整、帰属の側面がある。"
+      ],
+      "productImplication": "推し、キャラ、配信、世界観は軽い趣味ではなく、好きの理由を分けることで表現を見る力に変換できる。"
+    }
+  ],
+  "researchTakeaways": [
+    "若者のデジタル行動は、余暇の周辺ではなく主要な生活空間である。",
+    "スマホ、SNS、動画、ゲームは、浪費だけでなく、つながる、調べる、学ぶ、休む、試すが混在している。",
+    "将来不安は、未来全体ではなく、収入、仕事能力、人間関係、進路、AI時代の価値などに分ける必要がある。",
+    "SNSやコメント欄には、全開の発信ではなく、静かな参加、共在感、距離調整という意味がある。",
+    "推し活やゲーム内の反応は、審美眼、世界観感受性、攻略思考、場づくり感覚の入口になり得る。",
+    "MiraKuruの差別化は、会話のうまさではなく、行動素材を自己理解ログへ変換する専用構造にある。"
+  ],
+  "responseDesignPrinciples": [
+    {
+      "id": "material_first",
+      "label": "行動素材から入る",
+      "rule": "最初から感情名や問題名を当てない。ゲーム、動画、SNS、検索、推し、将来不安など、本人が置きやすい素材から入る。"
+    },
+    {
+      "id": "function_before_judgement",
+      "label": "判断より機能を見る",
+      "rule": "長時間利用や先送りをすぐ悪い行動にしない。その時間が何から守っていたか、何を満たしていたかを見る。"
+    },
+    {
+      "id": "low_pressure_disclosure",
+      "label": "低圧な自己開示",
+      "rule": "自由記述だけにしない。タグ、短文、未回答、あとで考えるを許す。"
+    },
+    {
+      "id": "raw_talent_not_type_label",
+      "label": "タイプ診断ではなく原石",
+      "rule": "あなたは何タイプと固定しない。反復して出る反応を、才能の原石として仮置きする。"
+    },
+    {
+      "id": "observation_before_action",
+      "label": "行動より観察",
+      "rule": "つらい日に作業や改善を急がせない。最初の一歩は1語メモ、1行記録、1つ選ぶ程度にする。"
+    }
+  ],
+  "coreModel": {
+    "input": "今日の短い記録",
+    "interpretationAxes": [
+      {
+        "id": "material",
+        "label": "素材",
+        "description": "ゲーム、動画、SNS、検索、将来不安、友人関係など、その日の表面上の行動や話題。"
+      },
+      {
+        "id": "feltReaction",
+        "label": "残った反応",
+        "description": "面白い、安心した、重い、比べた、見続けた、気になったなど、本人の中に残った感覚。"
+      },
+      {
+        "id": "protectedFrom",
+        "label": "守っていたもの",
+        "description": "退屈、不安、孤独、考えすぎ、責められる感じなど、その行動が一時的に弱めていた可能性があるもの。"
+      },
+      {
+        "id": "need",
+        "label": "根底の欲求",
+        "description": "自律性、できる感覚、つながり、安心、見通し、探索、表現など。"
+      },
+      {
+        "id": "rawTalentStone",
+        "label": "才能の原石",
+        "description": "まだ職業名や強みに断定しない、本人の反応傾向。"
+      },
+      {
+        "id": "smallStep",
+        "label": "小さな一歩",
+        "description": "余力があるときだけできる、5分以内の観察、記録、試作、質問。"
+      }
+    ],
+    "outputOrder": [
+      "today",
+      "feltReaction",
+      "protectedFrom",
+      "rawTalentStone",
+      "smallStep"
+    ]
+  },
+  "riskRules": {
+    "highRiskInputPatterns": [
+      "死にたい",
+      "消えたい",
+      "自傷",
+      "殺したい",
+      "もう無理",
+      "生きていたくない"
+    ],
+    "responsePolicy": {
+      "doNotConvertToTalent": true,
+      "message": "今は原石探しより、安全を優先する。ひとりで抱えず、近くの大人、学校、相談窓口、緊急時は119や110につなぐ。",
+      "nextAction": "通常の小さな一歩ではなく、今つながれる相手を1人だけ選ぶ。"
+    }
+  },
+  "entries": {
+    "game": {
+      "label": "ゲーム・実況",
+      "question": "その中で、少しでも心が動いたところはあった？ 近いものをいくつか置いてみて。",
+      "tags": [
+        "話し方",
+        "見せ方",
+        "編集",
+        "音楽",
+        "キャラ",
+        "ストーリー",
+        "世界観",
+        "攻略",
+        "上達感",
+        "達成感",
+        "操作感",
+        "協力",
+        "役割分担",
+        "一緒にいる感じ",
+        "緊張感",
+        "癒やし",
+        "なんとなく続けた"
+      ],
+      "rules": [
+        {
+          "id": "game_presentation",
+          "matchAny": [
+            "話し方",
+            "見せ方",
+            "編集"
+          ],
+          "need": "わかりやすさに触れたい",
+          "expression": "気づく",
+          "reaction": "{material}の中でも、内容そのものだけでなく、伝え方や見せ方に目が向いていた。",
+          "rawTalentStone": "人が見続けたくなる話し方や見せ方に反応する原石がある。説明、編集、発信の力につながる。",
+          "smallStep": "見続けたくなった場面を1つ選んで、何がよかったかを短くメモする。"
+        },
+        {
+          "id": "game_world",
+          "matchAny": [
+            "音楽",
+            "キャラ",
+            "ストーリー",
+            "世界観"
+          ],
+          "need": "世界に入りたい",
+          "expression": "つくる",
+          "reaction": "遊び方だけでなく、その世界の空気や物語に反応していた。",
+          "rawTalentStone": "世界に入り込みながら、その中の空気や仕組みを受け取る原石がある。企画や創作の入口になる。",
+          "smallStep": "その世界やキャラのどこが残ったかを、1行だけ残す。"
+        },
+        {
+          "id": "game_mastery",
+          "matchAny": [
+            "攻略",
+            "上達感",
+            "達成感",
+            "操作感"
+          ],
+          "need": "できるようになりたい",
+          "expression": "深める",
+          "reaction": "少しずつ進む感じや、できるようになる流れに反応していた。",
+          "rawTalentStone": "少しずつ分かる、できるようになる流れをつかむ原石がある。学習設計や攻略する力につながる。",
+          "smallStep": "少し気持ちよかった場面を1つ選んで、何が進んだ感じだったかを短くメモする。"
+        },
+        {
+          "id": "game_social_presence",
+          "matchAny": [
+            "協力",
+            "役割分担",
+            "一緒にいる感じ"
+          ],
+          "need": "つながっていたい",
+          "expression": "つなぐ",
+          "reaction": "ひとりで見ていても、場に混ざっているような感覚に反応していた。",
+          "rawTalentStone": "人がひとりじゃないと感じられる空気や距離感に反応する原石がある。場づくりやコミュニティ設計につながる。",
+          "smallStep": "一緒に動きやすかった場面があれば、何がよかったかを1つだけ残す。"
+        }
+      ]
+    },
+    "phone": {
+      "label": "スマホ・SNS・動画",
+      "question": "ここで減らす話はしない。何を見ていたか、その時間が何から少し守っていた感じがあるかだけ置いてみて。",
+      "activityTags": [
+        "YouTube",
+        "TikTok",
+        "X",
+        "Instagram",
+        "LINE",
+        "Discord",
+        "漫画",
+        "推し",
+        "コメント欄",
+        "ライブ配信",
+        "ニュース",
+        "検索",
+        "掲示板",
+        "短い動画"
+      ],
+      "guardTags": [
+        "退屈",
+        "不安",
+        "考えすぎ",
+        "孤独感",
+        "現実のしんどさ",
+        "責められる感じ",
+        "暇すぎる感じ",
+        "まだ分からない"
+      ],
+      "rules": [
+        {
+          "id": "phone_comment_air",
+          "matchAny": [
+            "コメント欄",
+            "ライブ配信",
+            "Discord",
+            "LINE"
+          ],
+          "need": "つながっていたい",
+          "expression": "空気を読む",
+          "reaction": "{activity}時間は、ただ消費していたというより、人の反応や場の空気を見ていた時間でもある。",
+          "protectedFrom": "その時間は、ひとりで抱えている感じや考えすぎを少し薄める避難場所にもなっていたように見える。",
+          "rawTalentStone": "人との距離感や会話の温度を読む原石がある。関係づくりやコミュニティ運営につながる。",
+          "smallStep": "居心地がよかった会話、コメント、空気を1つだけ短く残す。"
+        },
+        {
+          "id": "phone_feed_interest",
+          "matchAny": [
+            "YouTube",
+            "TikTok",
+            "X",
+            "Instagram",
+            "短い動画"
+          ],
+          "need": "気になってしまう",
+          "expression": "拾う",
+          "reaction": "{activity}ことの中で、流れてきたものにただ流された部分と、少し引っかかった部分が混ざっている。",
+          "protectedFrom": "その時間は、退屈や不安を少し弱める役割もあったかもしれない。",
+          "rawTalentStone": "流れてくる情報の中から、自分が引っかかるものを拾う原石がある。何に止まったかを集めると、興味の地図になる。",
+          "smallStep": "少し手が止まった投稿や動画を1つだけメモする。"
+        },
+        {
+          "id": "phone_search_question",
+          "matchAny": [
+            "検索",
+            "ニュース",
+            "掲示板"
+          ],
+          "need": "分かりたい",
+          "expression": "調べる",
+          "reaction": "{activity}時間は、ただ見ていたというより、分からないことや気になることを追いかけていた。",
+          "protectedFrom": "その時間は、先が見えない感じを少しでも確かめる役割があったように見える。",
+          "rawTalentStone": "問いを立てて調べる原石がある。調査、比較、編集、問題発見につながる。",
+          "smallStep": "検索した言葉を1つだけ残して、なぜ気になったかを短く添える。"
+        },
+        {
+          "id": "phone_favorite_expression",
+          "matchAny": [
+            "推し",
+            "漫画"
+          ],
+          "need": "支えがほしい",
+          "expression": "受け取る",
+          "reaction": "{activity}ことは、気持ちを支えるものを受け取っていた時間でもある。",
+          "protectedFrom": "その時間は、現実のしんどさや責められる感じを少し薄める役割があったように見える。",
+          "rawTalentStone": "誰かの表現や存在に支えられる感覚を細かく受け取る原石がある。好きの理由を分けると、表現を見る力になる。",
+          "smallStep": "好きだった場面を1つ選んで、どこに支えられた感じがしたかを短く残す。"
+        }
+      ]
+    },
+    "future": {
+      "label": "将来不安",
+      "question": "怖さの中身を少しだけ分けるなら、どれに近い？",
+      "tags": [
+        "進路",
+        "学校",
+        "受験",
+        "仕事",
+        "お金",
+        "AI",
+        "才能",
+        "人間関係",
+        "自分のこと",
+        "家族",
+        "同級生",
+        "比べてしまうこと",
+        "置いていかれる感じ",
+        "何者にもなれない感じ",
+        "まだ分からない"
+      ],
+      "rules": [
+        {
+          "id": "future_identity",
+          "matchAny": [
+            "才能",
+            "自分のこと",
+            "何者にもなれない感じ"
+          ],
+          "need": "自分を知りたい",
+          "expression": "分けて見る",
+          "reaction": "今日は、未来全体というより、自分に何があるのか分からない感じが重く残っていた。",
+          "protectedFrom": "その不安は、自分を責め続ける状態から少しでも身を守ろうとしている反応にも見える。",
+          "rawTalentStone": "自分に何があるのかを探そうとする原石がある。まだ答えがなくても、反応を集める力に変えられる。",
+          "smallStep": "今日は答えを出さず、重かった言葉を1つだけ残す。"
+        },
+        {
+          "id": "future_ai_value",
+          "matchAny": [
+            "AI"
+          ],
+          "need": "自分の価値を見つけたい",
+          "expression": "問いにする",
+          "reaction": "AI時代に、自分の価値が分からなくなる怖さが重く残っていた。",
+          "protectedFrom": "その不安は、置いていかれる感じから自分を守ろうとしている反応にも見える。",
+          "rawTalentStone": "AI時代の人間の価値を、自分の問題として見ようとする原石がある。これは問いを立てる力になる。",
+          "smallStep": "AIに置き換えにくいと感じる人間の行動を、今日1つだけメモする。"
+        },
+        {
+          "id": "future_comparison",
+          "matchAny": [
+            "同級生",
+            "比べてしまうこと",
+            "置いていかれる感じ"
+          ],
+          "need": "自分の位置を確かめたい",
+          "expression": "整える",
+          "reaction": "同じ年齢の人が進んで見えることが、自分の未来の見えなさを強くしていた。",
+          "protectedFrom": "その不安は、人と比べ続けて苦しくなる状態から自分を守ろうとしている反応にも見える。",
+          "rawTalentStone": "自分の位置を確かめようとする原石がある。目標や環境を選ぶ力に変えられる。",
+          "smallStep": "比べた相手の何がまぶしく見えたのかを、1語だけ残す。"
+        },
+        {
+          "id": "future_route",
+          "matchAny": [
+            "進路",
+            "学校",
+            "受験",
+            "仕事",
+            "お金"
+          ],
+          "need": "見通しがほしい",
+          "expression": "道を分ける",
+          "reaction": "未来全体ではなく、進む道や生活の見通しが重く残っていた。",
+          "protectedFrom": "その不安は、見えないまま決めさせられる怖さから自分を守ろうとしている反応にも見える。",
+          "rawTalentStone": "大きな不安を小さな要素に分けようとする原石がある。計画、整理、相談の力につながる。",
+          "smallStep": "今決めること、まだ決めなくていいことを1つずつ分ける。"
+        }
+      ]
+    },
+    "free": {
+      "label": "うまく分からない日",
+      "question": "その中で、少しでも残った感じがあるなら、どれが近い？",
+      "tags": [
+        "安心した",
+        "気になった",
+        "しんどかった",
+        "見続けた",
+        "少し楽だった",
+        "比べて落ちた",
+        "退屈だった",
+        "何も感じない",
+        "まだ分からない"
+      ],
+      "rules": [
+        {
+          "id": "free_low_energy",
+          "matchAny": [
+            "しんどかった",
+            "何も感じない",
+            "まだ分からない"
+          ],
+          "need": "休みたい",
+          "expression": "置く",
+          "reaction": "今日は、何かに変えるより、まず重さを置く日だった。",
+          "protectedFrom": "動けなかった時間にも、これ以上削られないための止まり方が含まれていたかもしれない。",
+          "rawTalentStone": "自分の状態を無理に良く見せず、少し外から見ようとする原石がある。",
+          "smallStep": "今日は追加で動かず、今の言葉を1行だけ残して終わる。"
+        },
+        {
+          "id": "free_interest",
+          "matchAny": [
+            "安心した",
+            "気になった",
+            "見続けた",
+            "少し楽だった"
+          ],
+          "need": "反応を知りたい",
+          "expression": "拾う",
+          "reaction": "今日の中に、小さいけれど残った反応がある。",
+          "protectedFrom": "",
+          "rawTalentStone": "小さな反応を見落とさず拾う原石がある。興味の入口になる。",
+          "smallStep": "何に少し反応したのか、単語で1つだけ残す。"
+        }
+      ]
+    }
+  },
+  "templateVariables": {
+    "material": "入力本文から推定した素材。例: ゲーム実況、RPG、スマホ、将来、検索。",
+    "activity": "スマホ系の具体行動。例: YouTubeを見ていた、Discordを見ていた、気になることを検索していた。",
+    "guardPhrase": "退屈、不安、考えすぎ、孤独感、現実のしんどさなどを自然な名詞句にしたもの。"
+  },
+  "blpUsableClaims": [
+    {
+      "claim": "若者のデジタル行動は、余暇の一部ではなく日常の主要行動空間である。",
+      "evidenceIds": [
+        "cfa_internet_2027_preliminary",
+        "soumu_media_usage_2025"
+      ],
+      "useInSlide": "現状課題"
+    },
+    {
+      "claim": "若者のスマホ利用には、娯楽だけでなく、つながる、調べる、学ぶ、休むが混在している。",
+      "evidenceIds": [
+        "cfa_internet_2027_preliminary",
+        "niye_highschool_sns_2024"
+      ],
+      "useInSlide": "現状課題"
+    },
+    {
+      "claim": "将来不安は若者の中心課題であり、収入、仕事能力、人間関係、進路、AI時代の価値などに分けて扱う必要がある。",
+      "evidenceIds": [
+        "cfa_youth_consciousness_2024"
+      ],
+      "useInSlide": "現状課題"
+    },
+    {
+      "claim": "MiraKuruの独自価値は、若者の日常行動を問題行動ログではなく自己理解ログへ変換する専用フレームにある。",
+      "evidenceIds": [
+        "ryan_deci_2000_sdt",
+        "docomo_mobile_society_sns_2025"
+      ],
+      "useInSlide": "独自価値"
+    },
+    {
+      "claim": "汎用AIチャットとの差は、行動素材、守っていたもの、根底の欲求、才能の原石、小さな一歩を継続的に蓄積する構造にある。",
+      "evidenceIds": [
+        "social_media_anxiety_review_2025",
+        "mof_oshi_2025"
+      ],
+      "useInSlide": "独自価値"
+    }
+  ],
+  "validationMetrics": [
+    {
+      "id": "felt_not_blamed",
+      "label": "責められなさ",
+      "question": "この返答を読んで、責められた感じはどれくらいありましたか。"
+    },
+    {
+      "id": "anxiety_reduction",
+      "label": "不安の軽減",
+      "question": "最初より、少しだけ不安が軽くなりましたか。"
+    },
+    {
+      "id": "self_understanding",
+      "label": "自己理解",
+      "question": "自分の反応や好きの理由が、少し見えましたか。"
+    },
+    {
+      "id": "small_step_feasible",
+      "label": "小さな一歩の実行可能性",
+      "question": "提案された一歩は、今日か明日にできそうですか。"
+    },
+    {
+      "id": "return_intent",
+      "label": "継続意向",
+      "question": "また別の日にも使ってみたいと思いましたか。"
+    }
+  ],
+  "implementationNotes": [
+    "MVPをfile://で動かす場合、外部JSONをfetchできないブラウザがある。ローカル単体デモではJSONをビルド時にHTMLへ埋め込むか、簡易ローカルサーバーを使う。",
+    "本番では、このJSONをサーバー側プロンプトとUIタグ生成の両方のソースにする。",
+    "ルールの優先順位は、危険入力、entry別ルール、選択タグ、本文キーワード、fallbackの順にする。",
+    "返答は最大5ブロックに制限する。長く説明しすぎると、ユーザーの負担が増える。"
+  ]
+}
